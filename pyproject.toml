@@ -7,7 +7,9 @@ authors = [
     { name = "Rajdeep Sandhu", email = "168480080+rajdeep-sandhu@users.noreply.github.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "marimo[recommended]>=0.23.14",
+]
 
 [project.scripts]
 inventory-analysis = "inventory_analysis:main"
