@@ -42,17 +42,17 @@ def _(mo):
 
 @app.cell
 def _(mo):
-    def file_upload_element():
-        """Return a file upload element for Euipment Transaction Data"""
-        file_input = mo.ui.file(
+    def file_element():
+        """Return a file element for Equipment Transaction Data"""
+        element = mo.ui.file(
             label="Upload Equipment Transaction Data (`.xlsx`)",
             filetypes=[".xlsx"],
             multiple=False,
         )
 
-        return file_input
+        return element
 
-    return (file_upload_element,)
+    return (file_element,)
 
 
 @app.cell
@@ -77,8 +77,8 @@ def _(file_input):
 
 
 @app.cell
-def _(file_upload_element):
-    (file_input := file_upload_element())
+def _(file_element):
+    (file_input := file_element())
     return (file_input,)
 
 
