@@ -75,16 +75,16 @@ def file_element_to_stream(file_element) -> dict:
 
 @app.cell
 def _(file_element):
-    (file_input := file_element())
-    return (file_input,)
+    (trans_file_element := file_element())
+    return (trans_file_element,)
 
 
 @app.cell
-def _(file_input):
+def _(trans_file_element):
     upload_result: dict | None = None
 
-    if file_input.value:
-        upload_result = file_element_to_stream(file_input)
+    if trans_file_element.value:
+        upload_result = file_element_to_stream(trans_file_element)
         ux_trans_filename: str = upload_result["filename"]
         ux_trans_file_stream = upload_result["file_stream"]
         ux_trans: pl.DataFrame = pl.read_excel(source=ux_trans_file_stream)
