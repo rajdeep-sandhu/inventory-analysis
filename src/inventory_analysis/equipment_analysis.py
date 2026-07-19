@@ -80,15 +80,36 @@ def _(file_element):
 
 
 @app.cell
-def _(trans_file_element):
-    upload_result: dict | None = None
+def _(mo):
+    def file_element_to_df(file_element) -> pl.DataFrame | None:
+        """
+        Return ux_trans DataFrame from mo.ui.file element
+        """
+        upload_result: dict | None = None
+        filename: str | None = None
+        df: pl.DataFrame | None = None
 
-    if trans_file_element.value:
-        upload_result = file_element_to_stream(trans_file_element)
-        ux_trans_filename: str = upload_result["filename"]
-        ux_trans_file_stream = upload_result["file_stream"]
-        ux_trans: pl.DataFrame = pl.read_excel(source=ux_trans_file_stream)
-        ux_trans = ux_trans.sort(by="ID")
+        if file_element.value:
+            upload_result = file_element_to_stream(file_element)
+            filename: str = upload_result["filename"]
+            file_stream = upload_result["file_stream"]
+            df: pl.DataFrame = pl.read_excel(source=file_stream)
+
+        message: str = (
+            f"File: `{filename}` uploaded."
+            if filename
+            else "No file uploaded."
+        )
+        mo.output.replace(mo.md(message))
+
+        return df
+
+    return (file_element_to_df,)
+
+
+@app.cell
+def _(file_element_to_df, trans_file_element):
+    ux_trans: pl.DataFrame = file_element_to_df(trans_file_element)
     return
 
 
