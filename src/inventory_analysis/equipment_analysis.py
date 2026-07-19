@@ -6,7 +6,9 @@ app = marimo.App(width="full", app_title="Equipment Analysis")
 
 @app.cell
 def _():
-    return
+    import marimo as mo
+
+    return (mo,)
 
 
 if __name__ == "__main__":
