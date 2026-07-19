@@ -55,39 +55,42 @@ def _(mo):
     return (file_upload_element,)
 
 
-@app.function
-def file_to_df(file_input) -> dict:
-    """
-    Returns the filename and a polars dataframe from a .xlsx file uploaded via mo.ui.file.
+@app.cell
+def _(file_input):
+    def file_element_to_stream(file_element) -> dict:
+        """
+        Returns the filename and a BytesIO stream from a mo.ui.file element.
 
-    params:
-    file_input: The file input element.
-    """
+        params:
+        file_input: mo.ui.file element.
+        """
 
-    # Get first result for single file upload
-    result = file_input.value[0]
-    filename: str = result.name
-    content: bytes = result.contents
-    df: pl.DataFrame = pl.read_excel(source=BytesIO(content))
+        # Get first result for single file upload
+        result = file_input.value[0]
+        filename: str = result.name
+        content: bytes = result.contents
+        file_stream = BytesIO(content)
 
-    return {"filename": filename, "data": df}
+        return {"filename": filename, "file_stream": file_stream}
+
+    return
 
 
 @app.cell
 def _(file_upload_element):
-    file_input = file_upload_element()
-    file_input
+    (file_input := file_upload_element())
     return (file_input,)
 
 
 @app.cell
-def _(file_input):
+def _(file_input, file_to_stream):
     upload_result: dict | None = None
 
     if file_input.value:
-        upload_result = file_to_df(file_input)
+        upload_result = file_to_stream(file_input)
         ux_trans_filename: str = upload_result["filename"]
-        ux_trans: pl.DataFrame = upload_result["data"]
+        ux_trans_file_stream = upload_result["file_stream"]
+        ux_trans: pl.DataFrame = pl.read_excel(source=ux_trans_file_stream)
         ux_trans = ux_trans.sort(by="ID")
     return
 
