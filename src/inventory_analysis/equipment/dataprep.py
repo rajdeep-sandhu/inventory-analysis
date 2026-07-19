@@ -33,7 +33,7 @@ def file_element_to_stream(file_element) -> dict:
     return {"filename": filename, "file_stream": file_stream}
 
 
-def file_element_to_df(file_element) -> pl.DataFrame | None:
+def file_element_to_df(file_element) -> tuple[str | None, pl.DataFrame | None]:
     """
     Return ux_trans DataFrame from mo.ui.file element
     """
@@ -54,4 +54,4 @@ def file_element_to_df(file_element) -> pl.DataFrame | None:
     )
     mo.output.replace(mo.md(message))
 
-    return df
+    return filename, df

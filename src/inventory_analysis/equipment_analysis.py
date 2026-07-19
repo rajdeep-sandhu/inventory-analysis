@@ -48,7 +48,7 @@ def _():
 
 @app.cell
 def _(trans_file_element):
-    ux_trans: pl.DataFrame = dataprep.file_element_to_df(trans_file_element)
+    ux_trans_filename, ux_trans = dataprep.file_element_to_df(trans_file_element)
     return
 
 
