@@ -4,11 +4,9 @@ __generated_with = "0.23.14"
 app = marimo.App(width="full", app_title="Equipment Analysis")
 
 with app.setup:
-    from io import BytesIO
+    from inventory_analysis.equipment import dataprep
 
     import polars as pl
-
-    from inventory_analysis.equipment import dataprep
 
 
 @app.cell(hide_code=True)
@@ -42,24 +40,6 @@ def _(mo):
     return
 
 
-@app.function
-def file_element_to_stream(file_element) -> dict:
-    """
-    Returns the filename and a BytesIO stream from a mo.ui.file element.
-
-    params:
-    file_input: mo.ui.file element.
-    """
-
-    # Get first result for single file upload
-    result = file_element.value[0]
-    filename: str = result.name
-    content: bytes = result.contents
-    file_stream = BytesIO(content)
-
-    return {"filename": filename, "file_stream": file_stream}
-
-
 @app.cell
 def _():
     (trans_file_element := dataprep.file_element())
@@ -77,7 +57,7 @@ def _(mo):
         df: pl.DataFrame | None = None
 
         if file_element.value:
-            upload_result = file_element_to_stream(file_element)
+            upload_result = dataprep.file_element_to_stream(file_element)
             filename: str = upload_result["filename"]
             file_stream = upload_result["file_stream"]
             df: pl.DataFrame = pl.read_excel(source=file_stream)
