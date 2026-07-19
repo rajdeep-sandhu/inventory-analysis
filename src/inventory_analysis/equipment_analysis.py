@@ -32,9 +32,18 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Use Polars to read the data due to better `.xlsx` support than DuckDB.
+    """)
+    return
+
+
 @app.cell
 def _(mo):
-    def get_data_file():
+    def file_upload_element():
+        """Return a file upload element for Euipment Transaction Data"""
         file_input = mo.ui.file(
             label="Upload Equipment Transaction Data (`.xlsx`)",
             filetypes=[".xlsx"],
@@ -43,7 +52,7 @@ def _(mo):
 
         return file_input
 
-    return (get_data_file,)
+    return (file_upload_element,)
 
 
 @app.function
@@ -65,15 +74,21 @@ def file_to_df(file_input) -> dict:
 
 
 @app.cell
-def _(get_data_file):
-    file_input = get_data_file()
+def _(file_upload_element):
+    file_input = file_upload_element()
     file_input
     return (file_input,)
 
 
 @app.cell
 def _(file_input):
-    file_to_df(file_input)
+    upload_result: dict | None = None
+
+    if file_input.value:
+        upload_result = file_to_df(file_input)
+        ux_trans_filename: str = upload_result["filename"]
+        ux_trans: pl.DataFrame = upload_result["data"]
+        ux_trans = ux_trans.sort(by="ID")
     return
 
 
