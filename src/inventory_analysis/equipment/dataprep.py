@@ -2,6 +2,7 @@
 from io import BytesIO
 
 import marimo as mo
+import polars as pl
 
 
 def file_element():
@@ -30,3 +31,27 @@ def file_element_to_stream(file_element) -> dict:
     file_stream = BytesIO(content)
 
     return {"filename": filename, "file_stream": file_stream}
+
+
+def file_element_to_df(file_element) -> pl.DataFrame | None:
+    """
+    Return ux_trans DataFrame from mo.ui.file element
+    """
+    upload_result: dict | None = None
+    filename: str | None = None
+    df: pl.DataFrame | None = None
+
+    if file_element.value:
+        upload_result = file_element_to_stream(file_element)
+        filename = upload_result["filename"]
+        file_stream = upload_result["file_stream"]
+        df = pl.read_excel(source=file_stream)
+
+    message: str = (
+        f"File: `{filename}` uploaded."
+        if filename
+        else "No file uploaded."
+    )
+    mo.output.replace(mo.md(message))
+
+    return df
