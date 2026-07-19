@@ -8,6 +8,8 @@ with app.setup:
 
     import polars as pl
 
+    from inventory_analysis.equipment import dataprep
+
 
 @app.cell(hide_code=True)
 def _(mo):
@@ -40,21 +42,6 @@ def _(mo):
     return
 
 
-@app.cell
-def _(mo):
-    def file_element():
-        """Return a file element for Equipment Transaction Data"""
-        element = mo.ui.file(
-            label="Upload Equipment Transaction Data (`.xlsx`)",
-            filetypes=[".xlsx"],
-            multiple=False,
-        )
-
-        return element
-
-    return (file_element,)
-
-
 @app.function
 def file_element_to_stream(file_element) -> dict:
     """
@@ -74,8 +61,8 @@ def file_element_to_stream(file_element) -> dict:
 
 
 @app.cell
-def _(file_element):
-    (trans_file_element := file_element())
+def _():
+    (trans_file_element := dataprep.file_element())
     return (trans_file_element,)
 
 
