@@ -10,6 +10,7 @@ requires-python = ">=3.14"
 dependencies = [
     "fastexcel>=0.20.2",
     "marimo[recommended, lsp]>=0.23.14",
+    "panel>=1.9.3",
 ]
 
 [project.scripts]
@@ -22,4 +23,6 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
+    "scikit-learn>=1.9.0",
+    "seaborn>=0.13.2",
 ]
