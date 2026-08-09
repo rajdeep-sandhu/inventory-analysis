@@ -551,6 +551,7 @@ source = { editable = "." }
 dependencies = [
     { name = "fastexcel" },
     { name = "marimo", extra = ["lsp", "recommended"] },
+    { name = "matplotlib" },
     { name = "panel" },
 ]
 
@@ -565,6 +566,7 @@ dev = [
 requires-dist = [
     { name = "fastexcel", specifier = ">=0.20.2" },
     { name = "marimo", extras = ["recommended", "lsp"], specifier = ">=0.23.14" },
+    { name = "matplotlib", specifier = ">=3.11.1" },
     { name = "panel", specifier = ">=1.9.3" },
 ]
 
