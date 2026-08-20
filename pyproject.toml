@@ -9,7 +9,7 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "fastexcel>=0.20.2",
-    "marimo[recommended, lsp]>=0.23.14",
+    "marimo[recommended, lsp]>=0.24.0",
     "matplotlib>=3.11.1",
     "panel>=1.9.3",
 ]
