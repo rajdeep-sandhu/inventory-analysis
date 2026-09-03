@@ -51,7 +51,7 @@ def _(trans_file_element):
     ux_trans_filename, ux_trans = dataprep.file_element_to_df(
         trans_file_element
     )
-    return
+    return (ux_trans,)
 
 
 @app.cell(hide_code=True)
@@ -59,6 +59,30 @@ def _(mo):
     mo.md(r"""
     ## Data Quality and Pre-processing
     """)
+    return
+
+
+@app.cell
+def _(mo):
+    def describe_raw_data(data: pl.DataFrame):
+        data_quality_tabs: dict = {
+            "ux_trans_pre": mo.ui.table(data, pagination=True, selection=None, freeze_columns_left=["ID"]),
+            "describe": mo.ui.table(
+                data.describe(), pagination=False, selection=None, freeze_columns_left=["statistic"]
+            ),
+            "schema": mo.ui.table(
+                data.schema, pagination=False, selection=None
+            ),
+        }
+
+        return mo.ui.tabs(data_quality_tabs)
+
+    return (describe_raw_data,)
+
+
+@app.cell
+def _(describe_raw_data, ux_trans):
+    describe_raw_data(ux_trans)
     return
 
 
