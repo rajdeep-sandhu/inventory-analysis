@@ -4,9 +4,9 @@ __generated_with = "0.24.0"
 app = marimo.App(width="full", app_title="Equipment Analysis")
 
 with app.setup:
-    from inventory_analysis.equipment import dataprep
-
     import polars as pl
+
+    from inventory_analysis.equipment import dataprep
 
 
 @app.cell(hide_code=True)
@@ -51,6 +51,14 @@ def _(trans_file_element):
     ux_trans_filename, ux_trans = dataprep.file_element_to_df(
         trans_file_element
     )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Data Quality and Pre-processing
+    """)
     return
 
 
