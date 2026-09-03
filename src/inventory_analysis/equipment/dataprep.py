@@ -55,3 +55,49 @@ def file_element_to_df(file_element) -> tuple[str | None, pl.DataFrame | None]:
     mo.output.replace(mo.md(message))
 
     return filename, df
+
+
+def has_expected_columns(data: pl.DataFrame) -> bool:
+    """
+    Return True data contains the expected columns in the expected order.
+    """
+
+    expected_columns: list[str] = [
+        "ID",
+        "Trans Date",
+        "Site Code",
+        "Trans Type",
+        "BP Code",
+        "Product Code",
+        "Quantity",
+        "Int Ref",
+        "Ext Ref",
+        "Trans Comment",
+        "Trans User",
+        "fsw_equip_code",
+        "sfdc_qty",
+        "act_vs_sys",
+        "isExtRefValid",
+        "fswDescValid",
+        "validEqCMR",
+        "Notes",
+        "date_extracted",
+        "wc",
+        "m_commencing",
+        "y_commencing",
+        "prodMatchesFsw",
+        "flagTrans",
+        "index_skip",
+        "Issue",
+        "rmi_po_bool",
+        "valid_ext_ref_bool",
+        "dup_bool",
+        "invalid_eqcmr",
+        "valid_adj",
+        "adj_linkage",
+        "incorrect_trans_user",
+        "date_ingested",
+        "completion_lag",
+    ]
+
+    return data.columns == expected_columns
