@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.14"
+__generated_with = "0.24.0"
 app = marimo.App(width="full", app_title="Equipment Analysis")
 
 with app.setup:
@@ -48,7 +48,9 @@ def _():
 
 @app.cell
 def _(trans_file_element):
-    ux_trans_filename, ux_trans = dataprep.file_element_to_df(trans_file_element)
+    ux_trans_filename, ux_trans = dataprep.file_element_to_df(
+        trans_file_element
+    )
     return
 
 
