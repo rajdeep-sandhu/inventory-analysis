@@ -77,12 +77,13 @@ def _(mo):
 
         return mo.ui.tabs(data_quality_tabs)
 
-    return (describe_raw_data,)
+    return
 
 
 @app.cell
-def _(describe_raw_data, ux_trans):
-    describe_raw_data(ux_trans)
+def _(ux_trans):
+    # Highlight if input file column structure has changed
+    dataprep.has_expected_columns(ux_trans)
     return
 
 
