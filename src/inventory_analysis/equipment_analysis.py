@@ -123,7 +123,7 @@ def _(mo, ux_trans: pl.DataFrame | None):
         sku_picker = mo.ui.multiselect(
             options=skus, label="Product Code", value=None
         )
-    return end_date_picker, start_date_picker
+    return end_date_picker, sku_picker, start_date_picker
 
 
 @app.cell
@@ -188,6 +188,26 @@ def _(end_date_picker, mo):
         ORDER BY "Product Code"
         """
     )
+    return
+
+
+@app.cell
+def _(sku_picker):
+    sku_picker
+    return
+
+
+@app.cell
+def _(ux_trans: pl.DataFrame | None):
+    # Define running balance by sku and site
+    ux_balances = ux_trans.with_columns(
+        pl.col("Quantity")
+        .cum_sum()
+        .over(["Product Code", "Site Code"])
+        .alias("running_balance")
+    )
+
+    ux_balances
     return
 
 
