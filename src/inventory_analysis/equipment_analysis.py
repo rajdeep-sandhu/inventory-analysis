@@ -211,5 +211,19 @@ def _(ux_trans: pl.DataFrame | None):
     return
 
 
+@app.cell
+def _(end_date_picker, ux_trans: pl.DataFrame | None):
+    # Daily delta by site and SKU.
+    delta_daily = (
+        ux_trans.filter(pl.col("date_extracted") <= end_date_picker.value)
+        .group_by(["date_extracted", "Site Code", "Product Code"])
+        .agg(pl.col("Quantity").sum().alias("qty"))
+        .sort(by=["date_extracted", "Site Code", "Product Code"])
+    )
+
+    delta_daily
+    return
+
+
 if __name__ == "__main__":
     app.run()
