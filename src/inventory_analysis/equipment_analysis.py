@@ -162,5 +162,34 @@ def _(end_date_picker, mo, ux_trans: pl.DataFrame | None):
     return
 
 
+@app.cell
+def _(end_date_picker, mo):
+    _df = mo.sql(
+        f"""
+        -- Pivot Quantity by SKU and Site
+        WITH
+            ux_trans_dated AS
+            (
+            SELECT
+            	"Site Code",
+            	"Product Code",
+            	"Quantity",
+            	date_extracted
+            FROM
+            	ux_trans
+            WHERE
+        		date_extracted <= '{end_date_picker.value.isoformat()}'
+            )
+
+        PIVOT ux_trans_dated
+        ON "Site Code"
+        USING COALESCE(SUM(Quantity), 0)
+        GROUP BY "Product Code"
+        ORDER BY "Product Code"
+        """
+    )
+    return
+
+
 if __name__ == "__main__":
     app.run()
