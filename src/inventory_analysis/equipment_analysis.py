@@ -4,6 +4,8 @@ __generated_with = "0.24.0"
 app = marimo.App(width="full", app_title="Equipment Analysis")
 
 with app.setup:
+    from datetime import date
+
     import duckdb
     import polars as pl
 
@@ -84,6 +86,55 @@ def _(ux_trans: pl.DataFrame | None):
     if ux_trans is not None:
         conn = duckdb.connect()
         conn.register("ux_trans", ux_trans)
+    return
+
+
+@app.cell
+def _(mo, ux_trans: pl.DataFrame | None):
+    if ux_trans is not None:
+        today: date = date.today()
+        min_trans_date: date = ux_trans["date_extracted"].min()
+        max_trans_date: date = ux_trans["date_extracted"].max()
+        sites: pl.Series = ux_trans["Site Code"].unique().sort()
+        skus: pl.Series = ux_trans["Product Code"].unique().sort()
+
+        # The dataset should not have dates beyond the current date.
+        # Raise an exception if it does.
+        if max_trans_date > today:
+            raise ValueError(
+                f"Dataset contains future transactions: "
+                f"max={max_trans_date:%Y-%m-%d}, today={today:%Y-%m-%d}"
+            )
+
+        start_date_picker = mo.ui.date.from_series(
+            ux_trans["date_extracted"],
+            value=min_trans_date,
+            label="Start Date",
+        )
+
+        end_date_picker = mo.ui.date.from_series(
+            ux_trans["date_extracted"], value=max_trans_date, label="End Date"
+        )
+
+        site_picker = mo.ui.multiselect(
+            options=sites, label="Site Code", value=None
+        )
+
+        sku_picker = mo.ui.multiselect(
+            options=skus, label="Product Code", value=None
+        )
+    return end_date_picker, start_date_picker
+
+
+@app.cell
+def _(end_date_picker, mo, start_date_picker):
+    mo.hstack(
+        [
+            start_date_picker,
+            end_date_picker,
+        ],
+        justify="start",
+    )
     return
 
 
