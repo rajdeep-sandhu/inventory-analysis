@@ -225,5 +225,24 @@ def _(end_date_picker, ux_trans: pl.DataFrame | None):
     return
 
 
+@app.cell
+def _(end_date_picker, ux_trans: pl.DataFrame | None):
+    # Pivot Quantity by site and SKU on a specific date using polars.
+    # This reveals equipment receipted or transferred without a site being selected.
+    # Figure out if this can be revealed in the SQL version too.
+    (
+        ux_trans.filter(pl.col("date_extracted") <= end_date_picker.value)
+        .pivot(
+            index="Product Code",
+            on="Site Code",
+            values="Quantity",
+            aggregate_function="sum",
+            sort_columns=True,
+        )
+        .sort(by="Product Code")
+    )
+    return
+
+
 if __name__ == "__main__":
     app.run()
