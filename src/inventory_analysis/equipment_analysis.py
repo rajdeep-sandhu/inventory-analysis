@@ -63,27 +63,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    def describe_raw_data(data: pl.DataFrame):
-        data_quality_tabs: dict = {
-            "ux_trans_pre": mo.ui.table(data, pagination=True, selection=None, freeze_columns_left=["ID"]),
-            "describe": mo.ui.table(
-                data.describe(), pagination=False, selection=None, freeze_columns_left=["statistic"]
-            ),
-            "schema": mo.ui.table(
-                data.schema, pagination=False, selection=None
-            ),
-        }
-
-        return mo.ui.tabs(data_quality_tabs)
-
+def _(ux_trans):
+    # Highlight if input file column structure has changed
+    dataprep.has_expected_columns(ux_trans)
     return
 
 
 @app.cell
 def _(ux_trans):
-    # Highlight if input file column structure has changed
-    dataprep.has_expected_columns(ux_trans)
+    dataprep.describe_raw_data(ux_trans)
     return
 
 

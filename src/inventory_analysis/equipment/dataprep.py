@@ -101,3 +101,17 @@ def has_expected_columns(data: pl.DataFrame) -> bool:
     ]
 
     return data.columns == expected_columns
+
+
+def describe_raw_data(data: pl.DataFrame):
+    data_quality_tabs: dict = {
+        "raw_data": mo.ui.table(data, pagination=True, selection=None, freeze_columns_left=["ID"]),
+        "describe": mo.ui.table(
+            data.describe(), pagination=False, selection=None, freeze_columns_left=["statistic"]
+        ),
+        "schema": mo.ui.table(
+            data.schema, pagination=False, selection=None
+        ),
+    }
+
+    return mo.ui.tabs(data_quality_tabs)
