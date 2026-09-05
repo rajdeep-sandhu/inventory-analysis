@@ -4,6 +4,7 @@ __generated_with = "0.24.0"
 app = marimo.App(width="full", app_title="Equipment Analysis")
 
 with app.setup:
+    import duckdb
     import polars as pl
 
     from inventory_analysis.equipment import dataprep
@@ -48,6 +49,9 @@ def _():
 
 @app.cell
 def _(trans_file_element):
+    ux_trans: pl.DataFrame | None = None
+    ux_trans_filename: str | None = None
+
     ux_trans_filename, ux_trans = dataprep.file_element_to_df(
         trans_file_element
     )
@@ -63,15 +67,23 @@ def _(mo):
 
 
 @app.cell
-def _(ux_trans):
+def _(ux_trans: pl.DataFrame | None):
     # Highlight if input file column structure has changed
     dataprep.has_expected_columns(ux_trans)
     return
 
 
 @app.cell
-def _(ux_trans):
+def _(ux_trans: pl.DataFrame | None):
     dataprep.describe_raw_data(ux_trans)
+    return
+
+
+@app.cell
+def _(ux_trans: pl.DataFrame | None):
+    if ux_trans is not None:
+        conn = duckdb.connect()
+        conn.register("ux_trans", ux_trans)
     return
 
 
