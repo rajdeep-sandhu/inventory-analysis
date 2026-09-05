@@ -138,5 +138,29 @@ def _(end_date_picker, mo, start_date_picker):
     return
 
 
+@app.cell
+def _(end_date_picker, mo, ux_trans: pl.DataFrame | None):
+    _df = mo.sql(
+        f"""
+        -- Get total stock by site and SKU on a specific date
+        SELECT
+            "Site Code",
+            "Product Code",
+            SUM(Quantity)
+        FROM
+            ux_trans
+        WHERE
+            date_extracted <= '{end_date_picker.value.isoformat()}'
+        GROUP BY
+            "Site Code",
+            "Product Code"
+        ORDER BY
+            "Site Code" ASC,
+            "Product Code" ASC
+        """
+    )
+    return
+
+
 if __name__ == "__main__":
     app.run()
